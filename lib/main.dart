@@ -1,14 +1,16 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 import './providers/great_places.dart';
 
 import './screens/places_list_screen.dart';
 import './screens/add_place_screen.dart';
+import './screens/place_detail_screen.dart';
 
 Future main() async {
-  await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
+  await FlutterConfig.loadEnvVariables();
   runApp(const MyApp());
 }
 
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
         home: const PlacesListScreen(),
         routes: {
           AddPlaceScreen.routeName: (context) => const AddPlaceScreen(),
+          PlaceDetailScreen.routeName: (context) => const PlaceDetailScreen(),
         },
       ),
     );

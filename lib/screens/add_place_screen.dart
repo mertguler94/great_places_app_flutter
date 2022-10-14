@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:great_places_app/models/place.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/image_input.dart';
@@ -17,11 +18,16 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _form = GlobalKey<FormState>();
-  late File _pickedImage;
-  var _placeTitle;
+  late File? _pickedImage;
+  late String? _placeTitle;
+  late PlaceLocation? _pickedLocation;
 
   void _selectImage(File pickedImage) {
     _pickedImage = pickedImage;
+  }
+
+  void _selectPlace(double lat, double lng) {
+    _pickedLocation = PlaceLocation(latitude: lat, longitude: lng);
   }
 
   void _savePlace() {
@@ -30,7 +36,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     _form.currentState?.save();
 
     Provider.of<GreatPlaces>(context, listen: false)
-        .addPlace(_placeTitle, _pickedImage);
+        .addPlace(_placeTitle!, _pickedImage!, _pickedLocation!);
     Navigator.of(context).pop();
   }
 
@@ -59,6 +65,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                           if (_pickedImage == null) {
                             return 'Please provide an image.';
                           }
+                          if (_pickedLocation == null) {
+                            return 'Please pick a location.';
+                          }
                           return null;
                         },
                         onSaved: ((value) {
@@ -68,7 +77,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                       const SizedBox(height: 10),
                       ImageInput(_selectImage),
                       const SizedBox(height: 10),
-                      LocationInput(),
+                      LocationInput(_selectPlace),
                     ],
                   ),
                 ),
